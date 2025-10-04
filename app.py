@@ -14,15 +14,19 @@ import re
 from functools import wraps
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'expense_management_secret_key_2024'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'expense_management_secret_key_2024')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max-size
 
 # Database configuration
-DATABASE = 'database/expense_management.db'
+DATABASE = os.environ.get('DATABASE_PATH', 'database/expense_management.db')
 
 def init_db():
     """Initialize the database with all required tables"""
+    # Create necessary directories
+    os.makedirs(os.path.dirname(DATABASE), exist_ok=True)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
@@ -299,7 +303,9 @@ def close_db_connection(error):
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') == 'development'
+    app.run(debug=debug, host='0.0.0.0', port=port)
 
 # Utility functions
 def get_currency_rates(base_currency='USD'):
