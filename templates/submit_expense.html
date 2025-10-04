@@ -14,38 +14,77 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="title" class="form-label">Expense Title</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
+                                <label for="title" class="form-label">Expense Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="title" name="title" required 
+                                       minlength="3" maxlength="100" 
+                                       placeholder="e.g., Business lunch with client"
+                                       autocomplete="off">
+                                <div class="invalid-feedback">
+                                    Please provide a descriptive title (3-100 characters).
+                                </div>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="category" class="form-label">Category</label>
+                                <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
                                 <select class="form-select" id="category" name="category" required>
                                     <option value="">Select Category</option>
                                     {% for cat in categories %}
                                     <option value="{{ cat }}">{{ cat }}</option>
                                     {% endfor %}
                                 </select>
+                                <div class="invalid-feedback">
+                                    Please select an expense category.
+                                </div>
+                                <div class="valid-feedback">
+                                    Category selected!
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="3" 
+                                  maxlength="500" 
+                                  placeholder="Provide additional details about this expense..."
+                                  autocomplete="off"></textarea>
+                        <div class="form-text">
+                            <span id="description-counter">0</span>/500 characters
+                        </div>
+                        <div class="invalid-feedback">
+                            Description cannot exceed 500 characters.
+                        </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="amount" class="form-label">Amount</label>
-                                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
+                                <label for="amount" class="form-label">Amount <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="amount" name="amount" 
+                                           step="0.01" min="0.01" max="999999.99" required
+                                           placeholder="0.00"
+                                           autocomplete="off">
+                                    <span class="input-group-text" id="currency-symbol">{{ session.base_currency }}</span>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a valid amount between 0.01 and 999,999.99.
+                                </div>
+                                <div class="valid-feedback">
+                                    Amount looks good!
+                                </div>
+                                <div class="form-text">
+                                    <small id="amount-converted" class="text-muted"></small>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="currency" class="form-label">Currency</label>
+                                <label for="currency" class="form-label">Currency <span class="text-danger">*</span></label>
                                 <select class="form-select" id="currency" name="currency" required>
                                     <option value="{{ session.base_currency }}" selected>{{ session.base_currency }}</option>
                                     {% for curr in currencies %}
@@ -54,19 +93,55 @@
                                     {% endif %}
                                     {% endfor %}
                                 </select>
+                                <div class="invalid-feedback">
+                                    Please select a currency.
+                                </div>
+                                <div class="valid-feedback">
+                                    Currency selected!
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="expense_date" class="form-label">Expense Date</label>
+                        <label for="expense_date" class="form-label">Expense Date <span class="text-danger">*</span></label>
                         <input type="date" class="form-control" id="expense_date" name="expense_date" required>
+                        <div class="invalid-feedback">
+                            Please select a valid date (cannot be in the future or older than 365 days).
+                        </div>
+                        <div class="valid-feedback">
+                            Date is valid!
+                        </div>
+                        <div class="form-text">
+                            <small id="date-helper" class="text-muted"></small>
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="receipt" class="form-label">Receipt</label>
-                        <input type="file" class="form-control" id="receipt" name="receipt" accept="image/*,.pdf">
-                        <div class="form-text">Upload receipt for OCR processing (JPG, PNG, PDF)</div>
+                        <input type="file" class="form-control" id="receipt" name="receipt" 
+                               accept="image/jpeg,image/jpg,image/png,image/webp,.pdf">
+                        <div class="form-text">
+                            Upload receipt for OCR processing (JPG, PNG, WebP, PDF - Max 10MB)
+                        </div>
+                        <div class="invalid-feedback">
+                            Please upload a valid receipt file (JPG, PNG, WebP, or PDF under 10MB).
+                        </div>
+                        <div class="valid-feedback">
+                            Receipt uploaded successfully!
+                        </div>
+                        <div class="mt-2" id="receipt-preview" style="display: none;">
+                            <div class="alert alert-info">
+                                <i class="fas fa-file-image me-2"></i>
+                                <span id="receipt-filename"></span>
+                                <span class="badge bg-secondary ms-2" id="receipt-filesize"></span>
+                            </div>
+                        </div>
+                        <div class="mt-2" id="ocr-processing" style="display: none;">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-spinner fa-spin me-2"></i>Processing receipt with OCR...
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-3" id="ocrResults" style="display: none;">
@@ -76,9 +151,15 @@
                         </div>
                     </div>
 
+                    <!-- Form Summary -->
+                    <div class="alert alert-light border" id="form-summary" style="display: none;">
+                        <h6><i class="fas fa-info-circle me-2"></i>Expense Summary</h6>
+                        <div id="summary-content"></div>
+                    </div>
+
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-md-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
                             <i class="fas fa-paper-plane me-2"></i>Submit Expense
                         </button>
                     </div>
@@ -116,45 +197,341 @@
 </div>
 
 <script>
-document.getElementById('receipt').addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
-        const formData = new FormData();
-        formData.append('receipt', file);
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('expenseForm');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('expense_date').value = today;
+    
+    // Set max date to today and min date to 365 days ago
+    const expenseDate = document.getElementById('expense_date');
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    expenseDate.max = today;
+    expenseDate.min = oneYearAgo.toISOString().split('T')[0];
 
-        fetch('/upload_receipt', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Populate form with OCR data
-                if (data.data.amount > 0) {
-                    document.getElementById('amount').value = data.data.amount;
-                }
-                if (data.data.date) {
-                    document.getElementById('expense_date').value = data.data.date;
-                }
-                if (data.data.description) {
-                    document.getElementById('description').value = data.data.description.substring(0, 200);
-                }
-
-                // Show OCR results
-                document.getElementById('ocrData').innerHTML = 
-                    `<p>Amount: ${data.data.amount}</p>
-                     <p>Date: ${data.data.date}</p>
-                     <p>Description: ${data.data.description.substring(0, 100)}...</p>`;
-                document.getElementById('ocrResults').style.display = 'block';
-            }
-        })
-        .catch(error => {
-            console.error('OCR processing failed:', error);
-        });
+    // Real-time validation functions
+    function validateTitle() {
+        const title = document.getElementById('title');
+        const value = title.value.trim();
+        
+        if (value.length === 0) {
+            setFieldState(title, false, 'Title is required');
+            return false;
+        } else if (value.length < 3) {
+            setFieldState(title, false, 'Title must be at least 3 characters');
+            return false;
+        } else if (value.length > 100) {
+            setFieldState(title, false, 'Title cannot exceed 100 characters');
+            return false;
+        } else {
+            setFieldState(title, true, 'Title looks good!');
+            return true;
+        }
     }
-});
 
-// Set default date to today
-document.getElementById('expense_date').value = new Date().toISOString().split('T')[0];
+    function validateAmount() {
+        const amount = document.getElementById('amount');
+        const value = parseFloat(amount.value);
+        
+        if (isNaN(value) || value <= 0) {
+            setFieldState(amount, false, 'Amount must be greater than 0');
+            return false;
+        } else if (value > 999999.99) {
+            setFieldState(amount, false, 'Amount cannot exceed 999,999.99');
+            return false;
+        } else {
+            setFieldState(amount, true, 'Amount is valid');
+            updateCurrencyDisplay();
+            return true;
+        }
+    }
+
+    function validateDate() {
+        const dateInput = document.getElementById('expense_date');
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        
+        if (!dateInput.value) {
+            setFieldState(dateInput, false, 'Date is required');
+            return false;
+        } else if (selectedDate > today) {
+            setFieldState(dateInput, false, 'Date cannot be in the future');
+            return false;
+        } else if (selectedDate < oneYearAgo) {
+            setFieldState(dateInput, false, 'Date cannot be older than 365 days');
+            return false;
+        } else {
+            const daysDiff = Math.ceil((today - selectedDate) / (1000 * 60 * 60 * 24));
+            setFieldState(dateInput, true, 'Date is valid');
+            document.getElementById('date-helper').textContent = 
+                daysDiff === 0 ? 'Today' : `${daysDiff} day${daysDiff > 1 ? 's' : ''} ago`;
+            return true;
+        }
+    }
+
+    function validateCategory() {
+        const category = document.getElementById('category');
+        if (!category.value) {
+            setFieldState(category, false, 'Please select a category');
+            return false;
+        } else {
+            setFieldState(category, true, 'Category selected');
+            return true;
+        }
+    }
+
+    function validateDescription() {
+        const description = document.getElementById('description');
+        const length = description.value.length;
+        
+        document.getElementById('description-counter').textContent = length;
+        
+        if (length > 500) {
+            setFieldState(description, false, 'Description too long');
+            return false;
+        } else {
+            setFieldState(description, true);
+            return true;
+        }
+    }
+
+    function validateFile() {
+        const fileInput = document.getElementById('receipt');
+        const file = fileInput.files[0];
+        
+        if (file) {
+            // Check file size (10MB limit)
+            if (file.size > 10 * 1024 * 1024) {
+                setFieldState(fileInput, false, 'File size must be under 10MB');
+                return false;
+            }
+            
+            // Check file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf'];
+            if (!allowedTypes.includes(file.type)) {
+                setFieldState(fileInput, false, 'Invalid file type');
+                return false;
+            }
+            
+            setFieldState(fileInput, true, 'File uploaded successfully');
+            showFilePreview(file);
+            return true;
+        }
+        return true; // File is optional
+    }
+
+    function setFieldState(field, isValid, message = '') {
+        field.classList.remove('is-valid', 'is-invalid');
+        
+        if (isValid === null) return; // Neutral state
+        
+        if (isValid) {
+            field.classList.add('is-valid');
+        } else {
+            field.classList.add('is-invalid');
+        }
+        
+        // Update feedback message if provided
+        if (message) {
+            const feedbackEl = field.parentNode.querySelector('.invalid-feedback, .valid-feedback');
+            if (feedbackEl) {
+                feedbackEl.textContent = message;
+            }
+        }
+    }
+
+    function showFilePreview(file) {
+        const preview = document.getElementById('receipt-preview');
+        const filename = document.getElementById('receipt-filename');
+        const filesize = document.getElementById('receipt-filesize');
+        
+        filename.textContent = file.name;
+        filesize.textContent = formatFileSize(file.size);
+        preview.style.display = 'block';
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function updateCurrencyDisplay() {
+        const currency = document.getElementById('currency').value;
+        document.getElementById('currency-symbol').textContent = currency;
+        
+        // Update converted amount display (if different currency)
+        const amount = parseFloat(document.getElementById('amount').value);
+        if (amount && currency !== '{{ session.base_currency }}') {
+            document.getElementById('amount-converted').textContent = 
+                `≈ ${amount.toFixed(2)} {{ session.base_currency }} (estimated)`;
+        } else {
+            document.getElementById('amount-converted').textContent = '';
+        }
+    }
+
+    function updateFormSummary() {
+        const isValid = validateForm(false);
+        if (isValid) {
+            const title = document.getElementById('title').value;
+            const amount = document.getElementById('amount').value;
+            const currency = document.getElementById('currency').value;
+            const category = document.getElementById('category').value;
+            const date = document.getElementById('expense_date').value;
+            
+            document.getElementById('summary-content').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>${title}</strong><br>
+                        <small class="text-muted">${category} • ${date}</small>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <strong class="text-primary">${parseFloat(amount).toFixed(2)} ${currency}</strong>
+                    </div>
+                </div>
+            `;
+            document.getElementById('form-summary').style.display = 'block';
+        } else {
+            document.getElementById('form-summary').style.display = 'none';
+        }
+    }
+
+    function validateForm(showErrors = true) {
+        const validations = [
+            validateTitle(),
+            validateAmount(),
+            validateDate(),
+            validateCategory(),
+            validateDescription(),
+            validateFile()
+        ];
+        
+        return validations.every(v => v);
+    }
+
+    // Event listeners for real-time validation
+    document.getElementById('title').addEventListener('input', () => {
+        validateTitle();
+        updateFormSummary();
+    });
+
+    document.getElementById('amount').addEventListener('input', () => {
+        validateAmount();
+        updateFormSummary();
+    });
+
+    document.getElementById('expense_date').addEventListener('change', () => {
+        validateDate();
+        updateFormSummary();
+    });
+
+    document.getElementById('category').addEventListener('change', () => {
+        validateCategory();
+        updateFormSummary();
+    });
+
+    document.getElementById('description').addEventListener('input', () => {
+        validateDescription();
+        updateFormSummary();
+    });
+
+    document.getElementById('currency').addEventListener('change', () => {
+        updateCurrencyDisplay();
+        updateFormSummary();
+    });
+
+    // Enhanced file upload with OCR
+    document.getElementById('receipt').addEventListener('change', function() {
+        validateFile();
+        
+        const file = this.files[0];
+        if (file && validateFile()) {
+            // Show processing indicator
+            document.getElementById('ocr-processing').style.display = 'block';
+            
+            const formData = new FormData();
+            formData.append('receipt', file);
+
+            fetch('/upload_receipt', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ocr-processing').style.display = 'none';
+                
+                if (data.success) {
+                    // Populate form with OCR data
+                    if (data.data.amount > 0) {
+                        document.getElementById('amount').value = data.data.amount;
+                        validateAmount();
+                    }
+                    if (data.data.date) {
+                        document.getElementById('expense_date').value = data.data.date;
+                        validateDate();
+                    }
+                    if (data.data.description) {
+                        document.getElementById('description').value = data.data.description.substring(0, 500);
+                        validateDescription();
+                    }
+
+                    // Show OCR results
+                    document.getElementById('ocrData').innerHTML = 
+                        `<p><strong>Amount:</strong> ${data.data.amount}</p>
+                         <p><strong>Date:</strong> ${data.data.date}</p>
+                         <p><strong>Description:</strong> ${data.data.description.substring(0, 100)}${data.data.description.length > 100 ? '...' : ''}</p>`;
+                    document.getElementById('ocrResults').style.display = 'block';
+                    
+                    updateFormSummary();
+                    
+                    // Show success notification
+                    showNotification('Receipt processed successfully! Form fields have been auto-filled.', 'success');
+                } else {
+                    showNotification(data.error || 'OCR processing failed. Please fill the form manually.', 'warning');
+                }
+            })
+            .catch(error => {
+                document.getElementById('ocr-processing').style.display = 'none';
+                console.error('OCR processing failed:', error);
+                showNotification('Unable to process receipt. Please check your connection and try again.', 'error');
+            });
+        }
+    });
+
+    // Form submission with enhanced validation
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+            submitBtn.disabled = true;
+            
+            // Add slight delay for better UX
+            setTimeout(() => {
+                form.submit();
+            }, 500);
+        } else {
+            // Focus on first invalid field
+            const firstInvalid = form.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.focus();
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            showNotification('Please correct the errors below before submitting.', 'error');
+        }
+    });
+
+    // Initialize currency display
+    updateCurrencyDisplay();
+});
 </script>
 {% endblock %}
