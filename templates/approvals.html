@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Approvals - FinSight{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-check-circle me-2"></i>Pending Approvals</h4>
+                <p class="mb-0 text-muted">Review and approve/reject expense claims</p>
+            </div>
+            <div class="card-body">
+                {% if pending_approvals %}
+                {% for approval in pending_approvals %}
+                <div class="expense-approval-card">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>{{ approval.title }}</h5>
+                            <p class="text-muted mb-1">
+                                <strong>Employee:</strong> {{ approval.employee_name }} | 
+                                <strong>Category:</strong> {{ approval.category }} |
+                                <strong>Date:</strong> {{ approval.expense_date }}
+                            </p>
+                            {% if approval.description %}
+                            <p class="text-muted">{{ approval.description }}</p>
+                            {% endif %}
+                            <div class="expense-details">
+                                <span class="badge bg-info">{{ "%.2f"|format(approval.converted_amount) }} {{ session.base_currency }}</span>
+                                {% if approval.receipt_url %}
+                                <a href="{{ url_for('static', filename='../uploads/' + approval.receipt_url) }}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">
+                                    <i class="fas fa-receipt me-1"></i>View Receipt
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="approval-actions">
+                                <form method="POST" action="{{ url_for('approve_expense', approval_id=approval.approval_id) }}" class="d-inline">
+                                    <input type="hidden" name="decision" value="approved">
+                                    <div class="mb-2">
+                                        <input type="text" name="comment" class="form-control form-control-sm" placeholder="Optional comment">
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-sm me-1">
+                                        <i class="fas fa-check me-1"></i>Approve
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('approve_expense', approval_id=approval.approval_id) }}" class="d-inline">
+                                    <input type="hidden" name="decision" value="rejected">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to reject this expense?')">
+                                        <i class="fas fa-times me-1"></i>Reject
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-check-double fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">No pending approvals</h5>
+                    <p class="text-muted">All caught up! No expense claims waiting for your approval.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

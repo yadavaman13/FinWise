@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FinSight{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h2>
+        <p class="text-muted">Welcome back, {{ session.name }}! Here's your expense overview.</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card bg-primary text-white">
+            <i class="fas fa-file-invoice"></i>
+            <h3>{{ user_stats.total_claims }}</h3>
+            <p>Total Claims</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-warning text-white">
+            <i class="fas fa-clock"></i>
+            <h3>{{ user_stats.pending_claims }}</h3>
+            <p>Pending</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-success text-white">
+            <i class="fas fa-check-circle"></i>
+            <h3>{{ user_stats.approved_claims }}</h3>
+            <p>Approved</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-info text-white">
+            <i class="fas fa-dollar-sign"></i>
+            <h3>{{ "%.2f"|format(user_stats.total_approved) }}</h3>
+            <p>Total Approved ({{ session.base_currency }})</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Expenses -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-list me-2"></i>Recent Expenses</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_expenses %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in recent_expenses %}
+                            <tr>
+                                <td>
+                                    <strong>{{ expense.title }}</strong><br>
+                                    <small class="text-muted">{{ expense.category }}</small>
+                                </td>
+                                <td>{{ "%.2f"|format(expense.converted_amount) }} {{ session.base_currency }}</td>
+                                <td>
+                                    {% if expense.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif expense.status == 'approved' %}
+                                        <span class="badge bg-success">Approved</span>
+                                    {% elif expense.status == 'rejected' %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ expense.expense_date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <a href="{{ url_for('my_expenses') }}" class="btn btn-outline-primary">View All Expenses</a>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No expenses submitted yet</p>
+                    <a href="{{ url_for('submit_expense') }}" class="btn btn-primary">Submit Your First Expense</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions & Pending Approvals -->
+    <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('submit_expense') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Submit Expense
+                    </a>
+                    <a href="{{ url_for('my_expenses') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-list me-2"></i>View My Expenses
+                    </a>
+                    {% if session.role_type in ['admin', 'manager'] %}
+                    <a href="{{ url_for('approvals') }}" class="btn btn-outline-warning">
+                        <i class="fas fa-check-circle me-2"></i>Review Approvals
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Approvals (for Managers/Admins) -->
+        {% if session.role_type in ['admin', 'manager'] and pending_approvals %}
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-exclamation-circle me-2"></i>Pending Approvals</h5>
+            </div>
+            <div class="card-body">
+                {% for approval in pending_approvals[:3] %}
+                <div class="approval-item">
+                    <strong>{{ approval.title }}</strong><br>
+                    <small class="text-muted">by {{ approval.employee_name }}</small><br>
+                    <span class="badge bg-info">{{ "%.2f"|format(approval.converted_amount) }} {{ session.base_currency }}</span>
+                </div>
+                {% endfor %}
+                {% if pending_approvals|length > 3 %}
+                <p class="text-center mb-0">
+                    <small>and {{ pending_approvals|length - 3 }} more...</small>
+                </p>
+                {% endif %}
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('approvals') }}" class="btn btn-warning btn-sm">Review All</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

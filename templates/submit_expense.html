@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Expense - FinSight{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-plus me-2"></i>Submit New Expense</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" id="expenseForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Expense Title</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat }}">{{ cat }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount</label>
+                                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="currency" class="form-label">Currency</label>
+                                <select class="form-select" id="currency" name="currency" required>
+                                    <option value="{{ session.base_currency }}" selected>{{ session.base_currency }}</option>
+                                    {% for curr in currencies %}
+                                    {% if curr != session.base_currency %}
+                                    <option value="{{ curr }}">{{ curr }}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="expense_date" class="form-label">Expense Date</label>
+                        <input type="date" class="form-control" id="expense_date" name="expense_date" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="receipt" class="form-label">Receipt</label>
+                        <input type="file" class="form-control" id="receipt" name="receipt" accept="image/*,.pdf">
+                        <div class="form-text">Upload receipt for OCR processing (JPG, PNG, PDF)</div>
+                    </div>
+
+                    <div class="mb-3" id="ocrResults" style="display: none;">
+                        <div class="alert alert-info">
+                            <strong>OCR Results:</strong>
+                            <div id="ocrData"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Expense
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-camera text-primary me-2"></i>Upload receipt for automatic data extraction</li>
+                    <li class="mb-2"><i class="fas fa-globe text-info me-2"></i>System supports multiple currencies</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Clear titles help with approval process</li>
+                    <li class="mb-2"><i class="fas fa-clock text-warning me-2"></i>Submit expenses within 30 days</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar me-2"></i>Your Stats</h5>
+            </div>
+            <div class="card-body text-center">
+                <p class="mb-1"><strong>This Month</strong></p>
+                <h4 class="text-primary">{{ session.base_currency }} 0.00</h4>
+                <small class="text-muted">Total submitted</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('receipt').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const formData = new FormData();
+        formData.append('receipt', file);
+
+        fetch('/upload_receipt', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Populate form with OCR data
+                if (data.data.amount > 0) {
+                    document.getElementById('amount').value = data.data.amount;
+                }
+                if (data.data.date) {
+                    document.getElementById('expense_date').value = data.data.date;
+                }
+                if (data.data.description) {
+                    document.getElementById('description').value = data.data.description.substring(0, 200);
+                }
+
+                // Show OCR results
+                document.getElementById('ocrData').innerHTML = 
+                    `<p>Amount: ${data.data.amount}</p>
+                     <p>Date: ${data.data.date}</p>
+                     <p>Description: ${data.data.description.substring(0, 100)}...</p>`;
+                document.getElementById('ocrResults').style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('OCR processing failed:', error);
+        });
+    }
+});
+
+// Set default date to today
+document.getElementById('expense_date').value = new Date().toISOString().split('T')[0];
+</script>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - FinSight{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="hero-section">
+            <h1 class="display-4 text-primary mb-4">
+                <i class="fas fa-chart-line me-3"></i>FinSight
+            </h1>
+            <p class="lead text-muted mb-4">
+                Streamline your company's expense reimbursement process with our intelligent, 
+                automated system featuring OCR receipt scanning, multi-currency support, 
+                and flexible approval workflows.
+            </p>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <i class="fas fa-camera text-success mb-2"></i>
+                        <h5>OCR Receipt Scanning</h5>
+                        <p class="small">Automatically extract expense details from receipts</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <i class="fas fa-globe text-info mb-2"></i>
+                        <h5>Multi-Currency</h5>
+                        <p class="small">Support for global currencies with auto-conversion</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <i class="fas fa-check-double text-warning mb-2"></i>
+                        <h5>Flexible Approvals</h5>
+                        <p class="small">Customizable approval workflows and rules</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt text-danger mb-2"></i>
+                        <h5>Audit Trail</h5>
+                        <p class="small">Complete tracking and compliance reporting</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-rocket me-2"></i>Start Free Trial
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="dashboard-preview">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Preview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="stat-card">
+                                <i class="fas fa-file-invoice text-primary"></i>
+                                <h6>Total Claims</h6>
+                                <span class="badge bg-primary">24</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-card">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <h6>Approved</h6>
+                                <span class="badge bg-success">18</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-card">
+                                <i class="fas fa-clock text-warning"></i>
+                                <h6>Pending</h6>
+                                <span class="badge bg-warning">6</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="recent-activity">
+                        <h6 class="text-muted">Recent Activity</h6>
+                        <div class="activity-item">
+                            <i class="fas fa-plus text-success"></i>
+                            <span>New expense submitted</span>
+                            <small class="text-muted">2 hours ago</small>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-check text-primary"></i>
+                            <span>Travel expense approved</span>
+                            <small class="text-muted">1 day ago</small>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-camera text-info"></i>
+                            <span>Receipt processed via OCR</span>
+                            <small class="text-muted">2 days ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="process-flow">
+            <h2 class="text-center mb-4">How It Works</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <h5>Submit Expense</h5>
+                        <p>Upload receipt, system auto-fills details using OCR</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <h5>Auto-Routing</h5>
+                        <p>Smart workflow routes to appropriate approvers</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <h5>Manager Review</h5>
+                        <p>Managers review and approve/reject with comments</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <h5>Reimbursement</h5>
+                        <p>Approved expenses ready for reimbursement</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

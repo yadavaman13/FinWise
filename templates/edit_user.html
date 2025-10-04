@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Edit User - FinSight{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-user-edit me-2"></i>Edit User: {{ user.name }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="role_type" class="form-label">Role</label>
+                                <select class="form-select" id="role_type" name="role_type" required>
+                                    <option value="">Select Role</option>
+                                    <option value="employee" {% if user.role_type == 'employee' %}selected{% endif %}>Employee</option>
+                                    <option value="manager" {% if user.role_type == 'manager' %}selected{% endif %}>Manager</option>
+                                    <option value="admin" {% if user.role_type == 'admin' %}selected{% endif %}>Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="manager_id" class="form-label">Manager (Optional)</label>
+                                <select class="form-select" id="manager_id" name="manager_id">
+                                    <option value="">Select Manager</option>
+                                    {% for manager in managers %}
+                                    <option value="{{ manager.user_id }}" {% if user.manager_id == manager.user_id %}selected{% endif %}>{{ manager.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active">
+                                User is Active
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Role Permissions:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li><strong>Employee:</strong> Submit expenses, view own expenses</li>
+                            <li><strong>Manager:</strong> Employee permissions + approve team expenses</li>
+                            <li><strong>Admin:</strong> All permissions + manage users and settings</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('manage_users') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('role_type').addEventListener('change', function() {
+    const managerSelect = document.getElementById('manager_id');
+    if (this.value === 'admin') {
+        managerSelect.disabled = true;
+        managerSelect.value = '';
+    } else {
+        managerSelect.disabled = false;
+    }
+});
+
+// Initialize the manager field based on current role
+if (document.getElementById('role_type').value === 'admin') {
+    document.getElementById('manager_id').disabled = true;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - FinSight{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2><i class="fas fa-cog me-2"></i>Admin Panel</h2>
+        <p class="text-muted">Manage your organization's FinSight system</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stat-card bg-primary text-white">
+            <i class="fas fa-users"></i>
+            <h3>{{ stats.total_users }}</h3>
+            <p>Total Users</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-info text-white">
+            <i class="fas fa-file-invoice"></i>
+            <h3>{{ stats.total_claims }}</h3>
+            <p>Total Claims</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-success text-white">
+            <i class="fas fa-dollar-sign"></i>
+            <h3>{{ "%.2f"|format(stats.total_approved_amount) }}</h3>
+            <p>Approved Amount ({{ session.base_currency }})</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Quick Actions -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('manage_users') }}" class="btn btn-primary">
+                        <i class="fas fa-users me-2"></i>Manage Users
+                    </a>
+                    <a href="{{ url_for('add_user') }}" class="btn btn-success">
+                        <i class="fas fa-user-plus me-2"></i>Add User
+                    </a>
+                    <button class="btn btn-info" onclick="exportData()">
+                        <i class="fas fa-download me-2"></i>Export Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if activities %}
+                <div class="activity-log">
+                    {% for activity in activities %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            {% if activity.action == 'CREATE' %}
+                                <i class="fas fa-plus text-success"></i>
+                            {% elif activity.action == 'UPDATE' %}
+                                <i class="fas fa-edit text-info"></i>
+                            {% elif activity.action == 'DELETE' %}
+                                <i class="fas fa-trash text-danger"></i>
+                            {% elif activity.action in ['APPROVED', 'REJECTED'] %}
+                                <i class="fas fa-check text-primary"></i>
+                            {% else %}
+                                <i class="fas fa-info text-muted"></i>
+                            {% endif %}
+                        </div>
+                        <div class="activity-content">
+                            <strong>{{ activity.user_name }}</strong> {{ activity.action.lower() }} {{ activity.entity.lower().replace('_', ' ') }}
+                            {% if activity.details %}
+                            <br><small class="text-muted">{{ activity.details }}</small>
+                            {% endif %}
+                            <br><small class="text-muted">{{ activity.timestamp[:19] }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-3">
+                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No recent activity</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportData() {
+    alert('Export functionality would generate CSV/Excel reports here');
+}
+</script>
+{% endblock %}
