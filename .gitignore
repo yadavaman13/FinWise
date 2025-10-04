@@ -157,13 +157,18 @@ dmypy.json
 cython_debug/
 
 # ===== DATABASE =====
-# SQLite databases
+# SQLite databases (actual data files - keep private)
 *.db
 *.sqlite
 *.sqlite3
 database/*.db
 database/*.sqlite
 database/*.sqlite3
+
+# Allow schema and setup files (no sensitive data)
+!database_schema.sql
+!setup_database.py
+!DATABASE.md
 
 # Database backups
 *.db.bak
