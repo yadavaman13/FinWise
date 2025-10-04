@@ -17,34 +17,33 @@ A comprehensive, full-stack expense management solution built for modern organiz
 - [Usage](#-usage)
 - [API Documentation](#-api-documentation)
 - [Architecture](#-architecture)
-- [Contributing](#-contributing)
 - [License](#-license)
 
 ##  Features
 
 ### Core Features
-- ** Multi-Role Authentication**: Admin, Manager, Employee roles with hierarchical permissions
-- ** OCR Receipt Scanning**: Automatic data extraction from receipts using Tesseract OCR
-- ** Multi-Currency Support**: Real-time currency conversion with API integration
-- ** Flexible Approval Workflows**: Sequential, percentage-based, and hybrid approval rules
-- ** Real-time Dashboard**: Interactive analytics and expense tracking
-- ** Advanced Search & Filtering**: Find expenses quickly with smart filters
-- ** Mobile-Responsive Design**: Works seamlessly on all devices
-- ** Complete Audit Trail**: Full tracking of all system activities
+-  Multi-Role Authentication**: Admin, Manager, Employee roles with hierarchical permissions
+-  OCR Receipt Scanning**: Automatic data extraction from receipts using Tesseract OCR
+-  Multi-Currency Support**: Real-time currency conversion with API integration
+-  Flexible Approval Workflows**: Sequential, percentage-based, and hybrid approval rules
+-  Real-time Dashboard**: Interactive analytics and expense tracking
+-  Advanced Search & Filtering**: Find expenses quickly with smart filters
+-  Mobile-Responsive Design**: Works seamlessly on all devices
+-  Complete Audit Trail**: Full tracking of all system activities
 
 ### Advanced Features
-- ** AI Policy Compliance**: Automatic violation detection
-- ** Analytics & Reporting**: Comprehensive expense analytics
-- ** Smart Notifications**: Real-time updates and alerts
-- ** Data Export**: CSV/Excel export functionality
-- ** Modern UI/UX**: Clean, intuitive interface with Bootstrap 5
-- ** Performance Optimized**: Fast loading and responsive interactions
+-  AI Policy Compliance**: Automatic violation detection
+-  Analytics & Reporting**: Comprehensive expense analytics
+-  Smart Notifications**: Real-time updates and alerts
+-  Data Export**: CSV/Excel export functionality
+-  Modern UI/UX**: Clean, intuitive interface with Bootstrap 5
+-  Performance Optimized**: Fast loading and responsive interactions
 
 ##  Tech Stack
 
 ### Backend
 - **Framework**: Flask 2.3.3
-- **Database**: SQLite (development) / PostgreSQL (production)
+- **Database**: SQLite (development)
 - **ORM**: SQLite3 with Raw SQL
 - **Authentication**: Werkzeug Security
 - **File Handling**: PIL (Pillow) for image processing
@@ -283,8 +282,7 @@ audit_log (log_id, user_id, action, entity, timestamp)
 
 ### Scaling Considerations
 
-- **Database**: PostgreSQL for production
-- **File Storage**: AWS S3 or similar
+- **Database**: SQL Lite
 - **Caching**: Redis for session storage
 - **Load Balancing**: Multiple Flask instances
 
@@ -309,10 +307,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ##  Support
 
-- **Documentation**: [Wiki](https://github.com/your-repo/wiki)
-- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
-- **Email**: support@finsight.com
+- **Documentation**: [Wiki](https://github.com/yadavaman13/FinWise)
+- **Issues**: [GitHub Issues](https://github.com/yadavaman13/FinWise/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yadavaman13/FinWise/discussions)
+- **Email**: yadavaman8511005211@gmail.com
 
 ---
 
