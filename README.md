@@ -1,4 +1,4 @@
-# 🚀 FinSight
+#  FinSight
 
 A comprehensive, full-stack expense management solution built for modern organizations. Features OCR receipt scanning, multi-currency support, flexible approval workflows, and intelligent automation.
 
@@ -7,7 +7,7 @@ A comprehensive, full-stack expense management solution built for modern organiz
 ![Flask](https://img.shields.io/badge/Flask-2.3.3-lightblue)
 ![Database](https://img.shields.io/badge/Database-SQLite%2FPostgreSQL-orange)
 
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
@@ -20,27 +20,27 @@ A comprehensive, full-stack expense management solution built for modern organiz
 - [Contributing](#-contributing)
 - [License](#-license)
 
-## ✨ Features
+##  Features
 
 ### Core Features
-- **🔐 Multi-Role Authentication**: Admin, Manager, Employee roles with hierarchical permissions
-- **📷 OCR Receipt Scanning**: Automatic data extraction from receipts using Tesseract OCR
-- **🌍 Multi-Currency Support**: Real-time currency conversion with API integration
-- **🔄 Flexible Approval Workflows**: Sequential, percentage-based, and hybrid approval rules
-- **📊 Real-time Dashboard**: Interactive analytics and expense tracking
-- **🔍 Advanced Search & Filtering**: Find expenses quickly with smart filters
-- **📱 Mobile-Responsive Design**: Works seamlessly on all devices
-- **🛡️ Complete Audit Trail**: Full tracking of all system activities
+- ** Multi-Role Authentication**: Admin, Manager, Employee roles with hierarchical permissions
+- ** OCR Receipt Scanning**: Automatic data extraction from receipts using Tesseract OCR
+- ** Multi-Currency Support**: Real-time currency conversion with API integration
+- ** Flexible Approval Workflows**: Sequential, percentage-based, and hybrid approval rules
+- ** Real-time Dashboard**: Interactive analytics and expense tracking
+- ** Advanced Search & Filtering**: Find expenses quickly with smart filters
+- ** Mobile-Responsive Design**: Works seamlessly on all devices
+- ** Complete Audit Trail**: Full tracking of all system activities
 
 ### Advanced Features
-- **🤖 AI Policy Compliance**: Automatic violation detection
-- **📈 Analytics & Reporting**: Comprehensive expense analytics
-- **🔔 Smart Notifications**: Real-time updates and alerts
-- **💾 Data Export**: CSV/Excel export functionality
-- **🎨 Modern UI/UX**: Clean, intuitive interface with Bootstrap 5
-- **⚡ Performance Optimized**: Fast loading and responsive interactions
+- ** AI Policy Compliance**: Automatic violation detection
+- ** Analytics & Reporting**: Comprehensive expense analytics
+- ** Smart Notifications**: Real-time updates and alerts
+- ** Data Export**: CSV/Excel export functionality
+- ** Modern UI/UX**: Clean, intuitive interface with Bootstrap 5
+- ** Performance Optimized**: Fast loading and responsive interactions
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Framework**: Flask 2.3.3
@@ -63,7 +63,7 @@ A comprehensive, full-stack expense management solution built for modern organiz
 - **OCR Processing**: Tesseract OCR
 - **Email**: Flask-Mail (for notifications)
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -90,7 +90,7 @@ python run.py
 
 Open your browser and navigate to `http://localhost:5000`
 
-## 🔧 Installation
+##  Installation
 
 ### Detailed Installation Steps
 
@@ -132,7 +132,7 @@ Open your browser and navigate to `http://localhost:5000`
    python run.py
    ```
 
-## ⚙️ Configuration
+##  Configuration
 
 ### Environment Variables
 
@@ -163,7 +163,7 @@ DATABASE = 'sqlite:///database/expense_management.db'
 DATABASE = 'postgresql://user:password@localhost/expense_db'
 ```
 
-## 📖 Usage
+##  Usage
 
 ### 1. First Time Setup
 
@@ -190,7 +190,7 @@ DATABASE = 'postgresql://user:password@localhost/expense_db'
 2. **Approval Rules**: Configure workflow logic
 3. **System Monitoring**: Access audit logs and analytics
 
-## 📚 API Documentation
+##  API Documentation
 
 ### Authentication Endpoints
 
@@ -226,7 +226,7 @@ PUT /api/users/{id}
 DELETE /api/users/{id}
 ```
 
-## 🏗 Architecture
+##  Architecture
 
 ### System Overview
 
@@ -257,7 +257,7 @@ approval_rules (rule_id, company_id, rule_type, threshold)
 audit_log (log_id, user_id, action, entity, timestamp)
 ```
 
-## 📦 Deployment
+##  Deployment
 
 ### Production Deployment
 
@@ -288,10 +288,6 @@ audit_log (log_id, user_id, action, entity, timestamp)
 - **Caching**: Redis for session storage
 - **Load Balancing**: Multiple Flask instances
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
-
 ### Development Setup
 
 1. Fork the repository
@@ -300,18 +296,18 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 4. Push to branch: `git push origin feature/amazing-feature`
 5. Open Pull Request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Flask team for the excellent framework
 - Bootstrap team for the UI components
 - Tesseract OCR for text recognition
 - All contributors and testers
 
-## 📞 Support
+##  Support
 
 - **Documentation**: [Wiki](https://github.com/your-repo/wiki)
 - **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
@@ -320,4 +316,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ for efficient expense management**
